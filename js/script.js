@@ -34,22 +34,32 @@ const movieDB = {
 			promoPoster.style.backgroundImage = "url(../img/bg.jpg)";
 		},
 		changePromoFilms: () => {
+			// ? Его
+			promoListUl.innerHTML = "";
 			movieDB.movies.sort();
-			for (let i = 0; i < promoListFilms.length; i++) {
-				promoListFilms[i].innerHTML = `${i + 1}. ${
-					movieDB.movies[i]
-				} <div class="delete"></div>`;
-				// domListElement.textContent = `${i + 1}. ${movieDB.movies[i]}`;
-				// domListElement.insertAdjacentHTML(
-				// 	"beforeend",
-				// 	'<div class="delete"></div>'
-				// );
-			}
+			movieDB.movies.forEach((film, i) => {
+				promoListUl.innerHTML += `<li class="promo__interactive-item">
+						${i + 1}. ${film}
+						<div class="delete"></div>
+					</li>`;
+			});
+			// ? Мое
+			// for (let i = 0; i < promoListFilms.length; i++) {
+			// 	promoListFilms[i].innerHTML = `${i + 1}. ${
+			// 		movieDB.movies[i]
+			// 	} <div class="delete"></div>`;
+			// 	// domListElement.textContent = `${i + 1}. ${movieDB.movies[i]}`;
+			// 	// domListElement.insertAdjacentHTML(
+			// 	// 	"beforeend",
+			// 	// 	'<div class="delete"></div>'
+			// 	// );
+			// }
 		},
 	},
 	adBlocks = document.querySelectorAll(".promo__adv > img"),
 	promoPoster = document.querySelector("div.promo__bg"),
 	promoListFilms = document.querySelectorAll(".promo__interactive-item"),
+	promoListUl = document.querySelector(".promo__interactive-list"),
 	promoGanre = document.querySelector(".promo__genre");
 movieDB.removeAd();
 movieDB.changeGanre();
