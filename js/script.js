@@ -58,9 +58,9 @@ const movieDB = {
 	},
 	adBlocks = document.querySelectorAll(".promo__adv > img"),
 	promoPoster = document.querySelector("div.promo__bg"),
+	promoGanre = promoPoster.querySelector(".promo__genre"),
 	promoListFilms = document.querySelectorAll(".promo__interactive-item"),
-	promoListUl = document.querySelector(".promo__interactive-list"),
-	promoGanre = document.querySelector(".promo__genre");
+	promoListUl = document.querySelector(".promo__interactive-list");
 movieDB.removeAd();
 movieDB.changeGanre();
 movieDB.chengePromoImg();
