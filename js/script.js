@@ -92,79 +92,77 @@ document.addEventListener("DOMContentLoaded", () => {
 				"Одержимость",
 				"Скотт Пилигрим против...",
 			],
-			removeAd: () => {
-				adBlocks.forEach((item) => {
-					item.remove();
-				});
-			},
-			changeGanre: () => {
-				promoGanre.textContent = "драма";
-			},
-			chengePromoImg: () => {
-				promoPoster.style.backgroundImage = "url(../img/bg.jpg)";
-			},
-			addMovieFromInput: () => {
-				imputAddMovie.parentElement.lastElementChild.addEventListener(
-					"click",
-					(e) => {
-						e.preventDefault(); // ? отмена событий по умолчанию
-						if (addLikeFilm.checked) {
-							console.log("Добавляем любимый фильм");
-						}
-						movieDB.movies.push(imputAddMovie.value);
-						movieDB.changePromoFilms();
-					}
-				);
-			},
-			changePromoFilms: () => {
-				// ? Его
-				promoListUl.innerHTML = "";
-				movieDB.movies.sort();
-				movieDB.movies.forEach((film, i) => {
-					if (film.length > 20) {
-						film = film.slice(0, 20) + "...";
-					}
-					promoListUl.innerHTML += `<li class="promo__interactive-item">
-				${i + 1}. ${film}
-				<div class="delete"></div>
-			</li>`;
-					//
-				});
-				movieDB.delFilmItem();
-				// ? Мое
-				// for (let i = 0; i < promoListFilms.length; i++) {
-				// 	promoListFilms[i].innerHTML = `${i + 1}. ${
-				// 		movieDB.movies[i]
-				// 	} <div class="delete"></div>`;
-				// 	// domListElement.textContent = `${i + 1}. ${movieDB.movies[i]}`;
-				// 	// domListElement.insertAdjacentHTML(
-				// 	// 	"beforeend",
-				// 	// 	'<div class="delete"></div>'
-				// 	// );
-				// }
-			},
-			delFilmItem: () => {
-				const delButtons = document.querySelectorAll(".delete");
-				delButtons.forEach((btn, i) => {
-					btn.addEventListener("click", () => {
-						movieDB.movies.splice(i, 1);
-						btn.parentElement.remove();
-						movieDB.changePromoFilms();
-					});
-				});
-			},
 		},
-		adBlocks = document.querySelectorAll(".promo__adv > img"),
-		promoPoster = document.querySelector("div.promo__bg"),
+		adBlocks = document.querySelectorAll(".promo__adv img"),
+		promoPoster = document.querySelector(".promo__bg"),
 		promoGanre = promoPoster.querySelector(".promo__genre"),
-		promoListFilms = document.querySelectorAll(".promo__interactive-item"),
 		promoListUl = document.querySelector(".promo__interactive-list"),
-		imputAddMovie = document.querySelector(".adding__input"),
-		addLikeFilm = document.querySelector(".add input[type=checkbox]");
+		addFilmForm = document.querySelector("form.add"),
+		addFilmLike = addFilmForm.querySelector("input[type=checkbox]"),
+		addFilmInput = addFilmForm.querySelector(".adding__input"),
+		arrMovies = movieDB.movies,
+		imgPosterURL = "url(../img/bg.jpg)";
 
-	movieDB.removeAd();
-	movieDB.changeGanre();
-	movieDB.chengePromoImg();
-	movieDB.addMovieFromInput();
-	movieDB.changePromoFilms();
+	const sortArr = (arr) => {
+		arr.sort();
+	};
+
+	const addMovieFromInput = (form, checkbox, input, arrFilms) => {
+		form.addEventListener("submit", (e) => {
+			e.preventDefault(); // ? отмена событий по умолчанию
+
+			let inputFilm = input.value;
+			const checkFavorite = checkbox.checked;
+
+			if (checkFavorite) {
+				console.log("Добавляем любимый фильм");
+			}
+
+			if (inputFilm) {
+				if (inputFilm.length > 20) {
+					inputFilm = `${inputFilm.substring(0, 22)}...`; // inputFilm.slice(0, 20) + "..."
+				}
+
+				arrFilms.push(inputFilm);
+				createMovieList(arrFilms, promoListUl);
+			}
+
+			e.target.reset();
+		});
+	};
+
+	const removeAd = (elem) => {
+		elem.forEach((item) => {
+			item.remove();
+		});
+	};
+
+	const changeInPromo = (elemGanre, elemPoster, imgURL) => {
+		elemGanre.textContent = "драма";
+		elemPoster.style.backgroundImage = imgURL;
+	};
+
+	const createMovieList = (arrFilms, parent) => {
+		parent.innerHTML = "";
+		sortArr(arrFilms);
+		arrFilms.forEach((film, i) => {
+			parent.innerHTML += `<li class="promo__interactive-item">
+			${i + 1}. ${film}
+			<div class="delete"></div>
+		</li>`;
+		}); // ? Создание HTML списка из массива
+
+		document.querySelectorAll(".delete").forEach((btn, i) => {
+			btn.addEventListener("click", () => {
+				arrFilms.splice(i, 1);
+				btn.parentElement.remove();
+
+				createMovieList(arrFilms, promoListUl);
+			});
+		}); // ? удаление элементов списка и с страницы и с массива
+	};
+	removeAd(adBlocks);
+	changeInPromo(promoGanre, promoPoster, imgPosterURL);
+	createMovieList(arrMovies, promoListUl);
+	addMovieFromInput(addFilmForm, addFilmLike, addFilmInput, arrMovies);
 });
